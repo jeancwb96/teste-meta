@@ -3,23 +3,21 @@ using Xunit;
 using Api2.Contracts;
 using Moq;
 using Api2.Services;
+using Api2.Utils;
 
 namespace ApiTwo.Test
 {
     public class CalcInterestRateServiceTest
     {
-        private readonly Mock<IInterestRate> _mockInterestRate;
+        private readonly Api2.Utils.Utils _utils;
         private readonly ICalcInterestRateService _service;
         
-        public CalcInterestRateServiceTest()
+        public CalcInterestRateServiceTest(Api2.Utils.Utils utils)
         {
-            _mockInterestRate = new Mock<IInterestRate>();
-            _mockInterestRate.Setup(x => x.ReturnInterestRate()).Returns(Task.FromResult<decimal>(0.01M));
-            _service = new CalcInterestRateService(_mockInterestRate.Object);
+            _utils = utils;
+            _service = new CalcInterestRateService(_utils);
         }
 
-        [Theory]
-        [InlineData(100.00, 5)]
         public async Task InterestCalcTest(decimal initalValue, int time)
         {
             var result = await _service.CalcInterestRate(initalValue, time);

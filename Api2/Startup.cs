@@ -15,7 +15,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using Refit;
 
 namespace Api2
 {
@@ -26,13 +25,12 @@ namespace Api2
             Configuration = configuration;
         }
 
-        public IConfiguration Configuration { get; }
+        public IConfiguration Configuration { get; }        
 
         public void ConfigureServices(IServiceCollection services)
         {
-
-            var api1 = Configuration["api1"].ToString();
-
+            services.AddTransient<ICalcInterestRateService, CalcInterestRateService>();
+            services.AddTransient<Utils.Utils>();
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
@@ -43,10 +41,8 @@ namespace Api2
                     Description = "Calcula taxa de juros",
                 });
             });
-            services.AddRefitClient<IInterestRate>()
-                .ConfigureHttpClient(c => c.BaseAddress = new Uri(api1));
 
-            services.AddScoped<ICalcInterestRateService, CalcInterestRateService>();
+      
         }
      
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
